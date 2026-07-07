@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PatiMatch Anolaima - Evidencia SENA</title>
+    
+    <!-- ESTILOS CSS -->
+    <style>
+        :root {
+            --morado-oscuro: #4b0082;
+            --morado-medio: #7b2cbf;
+            --morado-claro: #cdb4db;
+            --morado-pastel: #e0aaff;
+            --fondo: #f5f3ff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--fondo);
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .header-herramientas {
+            max-width: 800px;
+            margin: 0 auto 15px auto;
+            display: flex;
+        }
+
+        .btn-historial {
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        .btn-historial:hover { background-color: #495057; }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .seccion {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        h1, h2 {
+            color: var(--morado-oscuro);
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .contador {
+            text-align: center;
+            background: var(--morado-pastel);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: var(--morado-oscuro);
+        }
+
+        .grid-formulario {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .grid-formulario { grid-template-columns: 1fr; }
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+        @media (max-width: 600px) {
+            .full-width { grid-column: span 1; }
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--morado-oscuro);
+            font-size: 14px;
+        }
+
+        input[type="text"], input[type="email"], select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--morado-claro);
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--morado-medio);
+        }
+
+        button {
+            width: 100%;
+            background-color: var(--morado-medio);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover { background-color: var(--morado-oscuro); }
+        
+        button.cancelar {
+            background-color: #6c757d;
+            margin-top: 10px;
+        }
+
+        .buscador-container {
+            margin-bottom: 20px;
+        }
+
+        .grid-tarjetas {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            border: 1px solid var(--morado-claro);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-body {
+            padding: 15px;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--morado-oscuro);
+            margin: 0 0 10px 0;
+            border-bottom: 1px solid var(--morado-pastel);
+            padding-bottom: 5px;
+        }
+
+        .card-info {
+            font-size: 14px;
+            margin: 6px 0;
+        }
+
+        .card-info strong { color: var(--morado-medio); }
+
+        .tag-estado {
+            background: #fff0f0;
+            color: #d90429;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .card-botones {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-editar { background-color: #ffb703; color: #212529; padding: 6px; font-size: 13px; }
+        .btn-editar:hover { background-color: #fb8500; }
+        .btn-eliminar { background-color: #e63946; padding: 6px; font-size: 13px; }
+        .btn-eliminar:hover { background-color: #d90429; }
+
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0; top: 0; width: 100%; height: 100%; 
+            background-color: rgba(0,0,0,0.5); 
+        }
+
+        .modal-contenido {
+            background-color: white;
+            margin: 15% auto; 
+            padding: 20px;
+            border-radius: 12px;
+            width: 85%;
+            max-width: 450px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .cerrar-modal {
+            color: #aaa;
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .cerrar-modal:hover { color: black; }
+
+        .item-eliminado {
+            border-bottom: 1px dashed var(--morado-claro);
+            padding: 8px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BOTÓN DE HISTORIAL (Superior Izquierda) -->
+    <div class="header-herramientas">
+        <button class="btn-historial" id="btnAbrirHistorial">📋 Ver Historial Eliminados (<span id="cuentaEliminados">0</span>)</button>
+    </div>
+
+    <div class="container">
+        <h1>🐾 PatiMatch Anolaima</h1>
+        
+        <!-- SECCIÓN 1: CONTADOR Y FORMULARIO -->
+        <div class="seccion">
+            <div class="contador">
+                Total Reportes en la Base de Datos: <span id="totalReportes">0</span>
+            </div>
+
+            <h2 id="tituloFormulario">Registrar Caso de Abandono / Maltrato</h2>
+            <form id="formReporte">
+                <input type="hidden" id="reporteId">
+
+                <div class="grid-formulario">
+                    <div class="form-group">
+                        <label for="nombreMascota">Nombre de la Mascota:</label>
+                        <input type="text" id="nombreMascota" placeholder="Ej. Firulais o 'Desconocido'" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="situacion">Situación del Animal:</label>
+                        <select id="situacion" required>
+                            <option value="">Seleccione una situación...</option>
+                            <option value="Animal Abandonado">Animal Abandonado</option>
+                            <option value="Maltrato Evidente">Maltrato Evidente</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nombreCliente">Nombre de quien reporta (Cliente):</label>
+                        <input type="text" id="nombreCliente" placeholder="Ej. Juan Pérez" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telefono">Número de Teléfono:</label>
+                        <input type="text" id="telefono" placeholder="Ej. 3123456789" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="correo">Correo Electrónico:</label>
+                        <input type="email" id="correo" placeholder="Ej. juan@correo.com" required>
+                    </div>
+                </div>
+
+                <button type="submit" id="btnGuardar">Guardar Registro en Firestore</button>
+                <button type="button" id="btnCancelar" class="cancelar" style="display: none;">Cancelar Edición</button>
+            </form>
+        </div>
+
+        <!-- SECCIÓN 2: BUSCADOR Y TABLERO -->
+        <div class="seccion">
+            <h2>Base de Datos en Tiempo Real</h2>
+            
+            <div class="buscador-container">
+                <input type="text" id="buscador" placeholder="🔍 Buscar por nombre de la mascota...">
+            </div>
+
+            <div class="grid-tarjetas" id="contenedorTarjetas"></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE HISTORIAL -->
+    <div id="modalHistorial" class="modal">
+        <div class="modal-contenido">
+            <span class="cerrar-modal" id="btnCerrarHistorial">&times;</span>
+            <h3 style="color: #e63946; margin-top: 0;">🗑️ Historial de Eliminados (Sesión)</h3>
+            <div id="listaEliminados">
+                <p style="color: #666; font-size: 14px;">No hay registros eliminados en esta sesión.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONEXIÓN A TU PROPIO FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        // Importamos Firestore (Base de datos NoSQL) para almacenar la info
+        import { 
+            getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // TUS CREDENCIALES REALES INTEGRADAS
+        const firebaseConfig = {
+            apiKey: "AIzaSyBXcVNv1D5S-a5r-I_EAsV_0ONLAJCzF4s",
+            authDomain: "reportes-e629c.firebaseapp.com",
+            projectId: "reportes-e629c",
+            storageBucket: "reportes-e629c.firebasestorage.app",
+            messagingSenderId: "503893237982",
+            appId: "1:503893237982:web:ab86dff83e6217858d224f",
+            measurementId: "G-2EZPJTVLEY"
+        };
+
+        // Inicializar la aplicación
+        const app = initializeApp(firebaseConfig);
+        // Inicializar Firestore base de datos
+        const db = getFirestore(app);
+        // Nombre de la colección en tu Firebase
+        const reportesRef = collection(db, "patimatch_sena");
+
+        let todosLosReportes = [];
+        let historialEliminados = [];
+
+        // --- ESCUCHAR FIRESTORE EN TIEMPO REAL (Read) ---
+        onSnapshot(reportesRef, (snapshot) => {
+            todosLosReportes = [];
+            document.getElementById("totalReportes").innerText = snapshot.size;
+
+            snapshot.forEach((doc) => {
+                todosLosReportes.push({ id: doc.id, ...doc.data() });
+            });
+
+            renderizarTarjetas(todosLosReportes);
+        });
+
+        // --- DIBUJAR TARJETAS EN PANTALLA ---
+        function renderizarTarjetas(lista) {
+            const contenedor = document.getElementById("contenedorTarjetas");
+            contenedor.innerHTML = "";
+
+            if(lista.length === 0) {
+                contenedor.innerHTML = "<p style='text-align:center; grid-column:1/-1; color:#666;'>Sin registros en la base de datos.</p>";
+                return;
+            }
+
+            lista.forEach((item) => {
+                const tarjeta = document.createElement("div");
+                tarjeta.className = "card";
+                tarjeta.innerHTML = `
+                    <div class="card-body">
+                        <p class="card-title">🐾 Mascota: ${item.nombreMascota}</p>
+                        <p class="card-info"><strong>Cliente:</strong> ${item.nombreCliente}</p>
+                        <p class="card-info"><strong>Teléfono:</strong> ${item.telefono}</p>
+                        <p class="card-info"><strong>Correo:</strong> ${item.correo}</p>
+                        <div class="tag-estado">${item.situacion}</div>
+                    </div>
+                    <div class="card-botones">
+                        <button class="btn-editar" data-id="${item.id}">Editar</button>
+                        <button class="btn-eliminar" data-id="${item.id}">Eliminar</button>
+                    </div>
+                `;
+                contenedor.appendChild(tarjeta);
+            });
+
+            asignarEventosBotones();
+        }
+
+        // --- BUSCADOR POR NOMBRE ---
+        document.getElementById("buscador").addEventListener("input", (e) => {
+            const filtro = e.target.value.toLowerCase();
+            const filtrados = todosLosReportes.filter(item => 
+                item.nombreMascota.toLowerCase().includes(filtro)
+            );
+            renderizarTarjetas(filtrados);
+        });
+
+        // --- CREAR / ACTUALIZAR REGISTROS (Create / Update) ---
+        document.getElementById("formReporte").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const id = document.getElementById("reporteId").value;
+            
+            const datos = {
+                nombreMascota: document.getElementById("nombreMascota").value,
+                situacion: document.getElementById("situacion").value,
+                nombreCliente: document.getElementById("nombreCliente").value,
+                telefono: document.getElementById("telefono").value,
+                correo: document.getElementById("correo").value
+            };
+
+            try {
+                if (id === "") {
+                    await addDoc(reportesRef, datos);
+                    alert("¡Datos guardados con éxito en tu Firestore!");
+                } else {
+                    await updateDoc(doc(db, "patimatch_sena", id), datos);
+                    alert("¡Registro actualizado correctamente!");
+                    cancelarEdicion();
+                }
+                document.getElementById("formReporte").reset();
+            } catch (error) {
+                alert("Error al procesar los datos. Revisa tus reglas de Firebase.");
+            }
+        });
+
+        // --- BOTONES DE EDITAR Y ELIMINAR (Delete) ---
+        function asignarEventosBotones() {
+            document.querySelectorAll(".btn-eliminar").forEach(boton => {
+                boton.addEventListener("click", async (e) => {
+                    const id = e.target.dataset.id;
+                    const encontrado = todosLosReportes.find(a => a.id === id);
+
+                    if(confirm(`¿Deseas eliminar el registro de ${encontrado.nombreMascota}?`)) {
+                        try {
+                            historialEliminados.push({
+                                nombreMascota: encontrado.nombreMascota,
+                                cliente: encontrado.nombreCliente,
+                                hora: new Date().toLocaleTimeString()
+                            });
+                            
+                            document.getElementById("cuentaEliminados").innerText = historialEliminados.length;
+                            actualizarHistorialPantalla();
+
+                            await deleteDoc(doc(db, "patimatch_sena", id));
+                        } catch (error) {
+                            alert("No se pudo eliminar.");
+                        }
+                    }
+                });
+            });
+
+            document.querySelectorAll(".btn-editar").forEach(boton => {
+                boton.addEventListener("click", (e) => {
+                    const id = e.target.dataset.id;
+                    const item = todosLosReportes.find(a => a.id === id);
+
+                    if(item) {
+                        document.getElementById("reporteId").value = item.id;
+                        document.getElementById("nombreMascota").value = item.nombreMascota;
+                        document.getElementById("situacion").value = item.situacion;
+                        document.getElementById("nombreCliente").value = item.nombreCliente;
+                        document.getElementById("telefono").value = item.telefono;
+                        document.getElementById("correo").value = item.correo;
+
+                        document.getElementById("tituloFormulario").innerText = "✏️ Modificando Datos";
+                        document.getElementById("btnGuardar").innerText = "Actualizar Registro";
+                        document.getElementById("btnCancelar").style.display = "block";
+                        window.scrollTo({top: 0, behavior: 'smooth'});
+                    }
+                });
+            });
+        }
+
+        function actualizarHistorialPantalla() {
+            const lista = document.getElementById("listaEliminados");
+            lista.innerHTML = "";
+            historialEliminados.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "item-eliminado";
+                div.innerHTML = `🗑️ <strong>${item.nombreMascota}</strong> (Reportado por: ${item.cliente}) - <small>${item.hora}</small>`;
+                lista.appendChild(div);
+            });
+        }
+
+        const modal = document.getElementById("modalHistorial");
+        document.getElementById("btnAbrirHistorial").addEventListener("click", () => modal.style.display = "block");
+        document.getElementById("btnCerrarHistorial").addEventListener("click", () => modal.style.display = "none");
+        window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
+
+        document.getElementById("btnCancelar").addEventListener("click", cancelarEdicion);
+        function cancelarEdicion() {
+            document.getElementById("formReporte").reset();
+            document.getElementById("reporteId").value = "";
+            document.getElementById("tituloFormulario").innerText = "Registrar Caso de Abandono / Maltrato";
+            document.getElementById("btnGuardar").innerText = "Guardar Registro en Firestore";
+            document.getElementById("btnCancelar").style.display = "none";
+        }
+    </script>
+</body>
+</html>
