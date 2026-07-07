@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PatiMatch Anolaima - Evidencia SENA</title>
     
-    <!-- ESTILOS CSS -->
     <style>
         :root {
             --morado-oscuro: #4b0082;
@@ -23,10 +22,71 @@
             color: #333;
         }
 
+        /* --- PANTALLA DE LOGUEO --- */
+        #pantallaLogin {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .tarjeta-login {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .btn-google {
+            background-color: #ffffff;
+            color: #757575;
+            border: 2px solid var(--morado-claro);
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 25px;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .btn-google:hover {
+            background-color: #f8f9fa;
+            border-color: var(--morado-medio);
+            color: var(--morado-oscuro);
+        }
+
+        /* --- PANTALLA PRINCIPAL DE LA APP --- */
+        #pantallaApp {
+            display: none; /* Oculto por defecto hasta que se loguee */
+        }
+
         .header-herramientas {
             max-width: 800px;
             margin: 0 auto 15px auto;
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .usuario-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--morado-oscuro);
+        }
+
+        .usuario-info img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 2px solid var(--morado-medio);
         }
 
         .btn-historial {
@@ -39,8 +99,23 @@
             cursor: pointer;
             font-size: 14px;
             transition: background 0.3s;
+            width: auto;
         }
         .btn-historial:hover { background-color: #495057; }
+
+        .btn-cerrar-sesion {
+            background-color: #dc3545;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+            width: auto;
+            transition: background 0.3s;
+        }
+        .btn-cerrar-sesion:hover { background-color: #bd2130; }
 
         .container {
             max-width: 800px;
@@ -196,7 +271,7 @@
 
         .btn-editar { background-color: #ffb703; color: #212529; padding: 6px; font-size: 13px; }
         .btn-editar:hover { background-color: #fb8500; }
-        .btn-eliminar { background-color: #e63946; padding: 6px; font-size: 13px; }
+        .btn-eliminar { background-color: #e63946; padding: 6px; font-size: 13px; color: white;}
         .btn-eliminar:hover { background-color: #d90429; }
 
         .modal {
@@ -235,73 +310,92 @@
 </head>
 <body>
 
-    <!-- BOTÓN DE HISTORIAL (Superior Izquierda) -->
-    <div class="header-herramientas">
-        <button class="btn-historial" id="btnAbrirHistorial">📋 Ver Historial Eliminados (<span id="cuentaEliminados">0</span>)</button>
+    <div id="pantallaLogin">
+        <div class="tarjeta-login">
+            <h2 style="margin-bottom: 10px;">🐾 PatiMatch Anolaima</h2>
+            <p style="color: #666; font-size: 14px;">Evidencia de Despliegue - Plataforma SENA</p>
+            <hr style="border: 0; border-top: 1px solid var(--morado-claro); margin: 20px 0;">
+            <p style="font-size: 15px;">Por favor, inicia sesión para gestionar la Base de Datos.</p>
+            
+            <button class="btn-google" id="btnLoginGoogle">
+                <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.47h4.84c-.21 1.12-.84 2.07-1.79 2.7l2.76 2.13c1.62-1.49 2.58-3.69 2.58-6.26z" fill="#4285F4"/><path d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.76-2.13c-.76.51-1.74.82-3.2.82-2.46 0-4.55-1.66-5.3-3.89L.85 13.34C2.33 16.29 5.42 18 9 18z" fill="#34A853"/><path d="M3.7 10.62c-.19-.57-.3-1.18-.3-1.8 0-.62.11-1.23.3-1.8V4.34L.85 2.14C.3 3.24 0 4.48 0 5.82s.3 2.58.85 3.68l2.85-2.2z" fill="#FBBC05"/><path d="M9 3.58c1.32 0 2.5.45 3.44 1.35L15 2.3C13.46.86 11.43 0 9 0 5.42 0 2.33 1.71.85 4.66l2.85 2.2c.75-2.23 2.84-3.89 5.3-3.89z" fill="#EA4335"/></svg>
+                Iniciar sesión con Google
+            </button>
+        </div>
     </div>
 
-    <div class="container">
-        <h1>🐾 PatiMatch Anolaima</h1>
-        
-        <!-- SECCIÓN 1: CONTADOR Y FORMULARIO -->
-        <div class="seccion">
-            <div class="contador">
-                Total Reportes en la Base de Datos: <span id="totalReportes">0</span>
+
+    <div id="pantallaApp">
+        <div class="header-herramientas">
+            <button class="btn-historial" id="btnAbrirHistorial">📋 Ver Historial Eliminados (<span id="cuentaEliminados">0</span>)</button>
+            
+            <div class="usuario-info">
+                <img id="userFoto" src="" alt="Avatar">
+                <span id="userNombre">Usuario</span>
+                <button class="btn-cerrar-sesion" id="btnCerrarSesion">Cerrar Sesión</button>
             </div>
+        </div>
 
-            <h2 id="tituloFormulario">Registrar Caso de Abandono / Maltrato</h2>
-            <form id="formReporte">
-                <input type="hidden" id="reporteId">
-
-                <div class="grid-formulario">
-                    <div class="form-group">
-                        <label for="nombreMascota">Nombre de la Mascota:</label>
-                        <input type="text" id="nombreMascota" placeholder="Ej. Firulais o 'Desconocido'" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="situacion">Situación del Animal:</label>
-                        <select id="situacion" required>
-                            <option value="">Seleccione una situación...</option>
-                            <option value="Animal Abandonado">Animal Abandonado</option>
-                            <option value="Maltrato Evidente">Maltrato Evidente</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="nombreCliente">Nombre de quien reporta (Cliente):</label>
-                        <input type="text" id="nombreCliente" placeholder="Ej. Juan Pérez" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="telefono">Número de Teléfono:</label>
-                        <input type="text" id="telefono" placeholder="Ej. 3123456789" required>
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label for="correo">Correo Electrónico:</label>
-                        <input type="email" id="correo" placeholder="Ej. juan@correo.com" required>
-                    </div>
+        <div class="container">
+            <h1>🐾 PatiMatch Anolaima</h1>
+            
+            <div class="seccion">
+                <div class="contador">
+                    Total Reportes en la Base de Datos: <span id="totalReportes">0</span>
                 </div>
 
-                <button type="submit" id="btnGuardar">Guardar Registro en Firestore</button>
-                <button type="button" id="btnCancelar" class="cancelar" style="display: none;">Cancelar Edición</button>
-            </form>
-        </div>
+                <h2 id="tituloFormulario">Registrar Caso de Abandono / Maltrato</h2>
+                <form id="formReporte">
+                    <input type="hidden" id="reporteId">
 
-        <!-- SECCIÓN 2: BUSCADOR Y TABLERO -->
-        <div class="seccion">
-            <h2>Base de Datos en Tiempo Real</h2>
-            
-            <div class="buscador-container">
-                <input type="text" id="buscador" placeholder="🔍 Buscar por nombre de la mascota...">
+                    <div class="grid-formulario">
+                        <div class="form-group">
+                            <label for="nombreMascota">Nombre de la Mascota:</label>
+                            <input type="text" id="nombreMascota" placeholder="Ej. Firulais o 'Desconocido'" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="situacion">Situación del Animal:</label>
+                            <select id="situacion" required>
+                                <option value="">Seleccione una situación...</option>
+                                <option value="Animal Abandonado">Animal Abandonado</option>
+                                <option value="Maltrato Evidente">Maltrato Evidente</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nombreCliente">Nombre de quien reporta (Cliente):</label>
+                            <input type="text" id="nombreCliente" placeholder="Ej. Juan Pérez" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="telefono">Número de Teléfono:</label>
+                            <input type="text" id="telefono" placeholder="Ej. 3123456789" required>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="correo">Correo Electrónico:</label>
+                            <input type="email" id="correo" placeholder="Ej. juan@correo.com" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btnGuardar">Guardar Registro en Firestore</button>
+                    <button type="button" id="btnCancelar" class="cancelar" style="display: none;">Cancelar Edición</button>
+                </form>
             </div>
 
-            <div class="grid-tarjetas" id="contenedorTarjetas"></div>
+            <div class="seccion">
+                <h2>Base de Datos en Tiempo Real</h2>
+                
+                <div class="buscador-container">
+                    <input type="text" id="buscador" placeholder="🔍 Buscar por nombre de la mascota...">
+                </div>
+
+                <div class="grid-tarjetas" id="contenedorTarjetas"></div>
+            </div>
         </div>
     </div>
 
-    <!-- MODAL DE HISTORIAL -->
     <div id="modalHistorial" class="modal">
         <div class="modal-contenido">
             <span class="cerrar-modal" id="btnCerrarHistorial">&times;</span>
@@ -312,15 +406,17 @@
         </div>
     </div>
 
-    <!-- CONEXIÓN A TU PROPIO FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        // Importamos Firestore (Base de datos NoSQL) para almacenar la info
         import { 
             getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc 
         } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        // Importes de Firebase Auth
+        import { 
+            getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // TUS CREDENCIALES REALES INTEGRADAS
+        // Credenciales Reales Integradas
         const firebaseConfig = {
             apiKey: "AIzaSyBXcVNv1D5S-a5r-I_EAsV_0ONLAJCzF4s",
             authDomain: "reportes-e629c.firebaseapp.com",
@@ -331,27 +427,71 @@
             measurementId: "G-2EZPJTVLEY"
         };
 
-        // Inicializar la aplicación
         const app = initializeApp(firebaseConfig);
-        // Inicializar Firestore base de datos
         const db = getFirestore(app);
-        // Nombre de la colección en tu Firebase
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        
         const reportesRef = collection(db, "patimatch_sena");
 
         let todosLosReportes = [];
         let historialEliminados = [];
+        let unsubscribeFirestore = null; // Guardará el listener activo de base de datos
 
-        // --- ESCUCHAR FIRESTORE EN TIEMPO REAL (Read) ---
-        onSnapshot(reportesRef, (snapshot) => {
-            todosLosReportes = [];
-            document.getElementById("totalReportes").innerText = snapshot.size;
+        // --- MANEJO DEL ESTADO DE AUTENTICACIÓN ---
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Usuario logueado: Mostrar app, ocultar login
+                document.getElementById("pantallaLogin").style.display = "none";
+                document.getElementById("pantallaApp").style.display = "block";
+                
+                // Cargar datos de perfil de Google
+                document.getElementById("userNombre").innerText = user.displayName;
+                document.getElementById("userFoto").src = user.photoURL || "https://via.placeholder.com/35";
 
-            snapshot.forEach((doc) => {
-                todosLosReportes.push({ id: doc.id, ...doc.data() });
-            });
-
-            renderizarTarjetas(todosLosReportes);
+                // Iniciar la escucha en tiempo real de Firestore
+                activarEscuchaFirestore();
+            } else {
+                // Usuario deslogueado: Mostrar login, ocultar app
+                document.getElementById("pantallaLogin").style.display = "flex";
+                document.getElementById("pantallaApp").style.display = "none";
+                
+                // Cancelar la escucha de Firestore si existía para evitar fugas de memoria
+                if (unsubscribeFirestore) {
+                    unsubscribeFirestore();
+                }
+            }
         });
+
+        // --- FUNCIONES DE LOGIN Y LOGOUT ---
+        document.getElementById("btnLoginGoogle").addEventListener("click", async () => {
+            try {
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.error("Error al autenticar: ", error);
+                alert("No se pudo iniciar sesión con Google. Verifica la consola.");
+            }
+        });
+
+        document.getElementById("btnCerrarSesion").addEventListener("click", async () => {
+            if(confirm("¿Estás seguro de que deseas cerrar sesión?")) {
+                await signOut(auth);
+            }
+        });
+
+        // --- ESCUCHAR FIRESTORE EN TIEMPO REAL ---
+        function activarEscuchaFirestore() {
+            unsubscribeFirestore = onSnapshot(reportesRef, (snapshot) => {
+                todosLosReportes = [];
+                document.getElementById("totalReportes").innerText = snapshot.size;
+
+                snapshot.forEach((doc) => {
+                    todosLosReportes.push({ id: doc.id, ...doc.data() });
+                });
+
+                renderizarTarjetas(todosLosReportes);
+            });
+        }
 
         // --- DIBUJAR TARJETAS EN PANTALLA ---
         function renderizarTarjetas(lista) {
@@ -426,10 +566,10 @@
         function asignarEventosBotones() {
             document.querySelectorAll(".btn-eliminar").forEach(boton => {
                 boton.addEventListener("click", async (e) => {
-                    const id = e.target.dataset.id;
+                    const id = e.currentTarget.dataset.id;
                     const encontrado = todosLosReportes.find(a => a.id === id);
 
-                    if(confirm(`¿Deseas eliminar el registro de ${encontrado.nombreMascota}?`)) {
+                    if(encontrado && confirm(`¿Deseas eliminar el registro de ${encontrado.nombreMascota}?`)) {
                         try {
                             historialEliminados.push({
                                 nombreMascota: encontrado.nombreMascota,
@@ -442,7 +582,7 @@
 
                             await deleteDoc(doc(db, "patimatch_sena", id));
                         } catch (error) {
-                            alert("No se pudo eliminar.");
+                            alert("No se pudo eliminar el registro de la base de datos.");
                         }
                     }
                 });
@@ -450,7 +590,7 @@
 
             document.querySelectorAll(".btn-editar").forEach(boton => {
                 boton.addEventListener("click", (e) => {
-                    const id = e.target.dataset.id;
+                    const id = e.currentTarget.dataset.id;
                     const item = todosLosReportes.find(a => a.id === id);
 
                     if(item) {
